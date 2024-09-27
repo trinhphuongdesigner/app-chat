@@ -4,18 +4,18 @@ const { ExtractJwt } = require('passport-jwt');
 // const { BasicStrategy } = require('passport-http');
 
 const jwtSettings = require('../constants/jwtSetting.js');
-const { Employee } = require('../models');
+const { User } = require('../models');
 
 const passportVerifyToken = new JwtStrategy(
   {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken('Authorization'), // Vị trí kiểm tra token
-    secretOrKey: jwtSettings.SECRET, // Chuỗi khóa bí mật để mã hóa
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken('Authorization'),
+    secretOrKey: jwtSettings.SECRET,
   },
   async (payload, done) => {
     try {
-      const user = await Employee.findOne({
+      const user = await User.findOne({
         _id: payload._id,
-        isDeleted: false,
+        isActive: true,
       }).select('-password');
 
       if (!user) return done(null, false);
@@ -30,8 +30,8 @@ const passportVerifyToken = new JwtStrategy(
 const passportVerifyAccount = new LocalStrategy({ usernameField: 'email' },
   async (email, password, done) => {
     try {
-      const user = await Employee.findOne({
-        isDeleted: false,
+      const user = await User.findOne({
+        isActive: true,
         email,
       });
 
@@ -49,26 +49,7 @@ const passportVerifyAccount = new LocalStrategy({ usernameField: 'email' },
     }
   });
 
-// const passportConfigBasic = new BasicStrategy((async (username, password, done) => {
-//   try {
-//     const user = await Employee.findOne({ email: username, isDeleted: false });
-
-//     if (!user) return done(null, false);
-
-//     const isCorrectPass = await user.isValidPass(password);
-
-//     if (!isCorrectPass) return done(null, false);
-
-//     user.password = undefined;
-
-//     return done(null, user);
-//   } catch (error) {
-//     done(error, false);
-//   }
-// }));
-
 module.exports = {
   passportVerifyToken,
   passportVerifyAccount,
-  // passportConfigBasic,
 };
