@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const fs = require('fs');
 const http = require('http');
 const mongoose = require('mongoose');
@@ -9,7 +10,6 @@ const app = require('./config/express');
 const {
   passportVerifyToken,
   passportVerifyAccount,
-  // passportConfigBasic,
 } = require('./src/middlewares/passport');
 
 const server = http.createServer(app);
@@ -52,7 +52,6 @@ const routes = require('./src/modules/routes');
 
 passport.use(passportVerifyToken);
 passport.use(passportVerifyAccount);
-// passport.use(passportConfigBasic);
 
 app.use('/admin', (req, res, next) => {
   res.locals.formatDate = helpers.formatDate;
@@ -71,15 +70,15 @@ const PORT = process.env.PORT || 3000;
 socketIO.on('connection', (socket) => { // /Handle khi có connect từ client tới
   console.log('🔥🔥🔥««««« New client connected »»»»»🚀🚀🚀', socket.id);
 
-  console.log('🔥🔥🔥««««« getId »»»»»🚀🚀🚀', socket.id);
+  // console.log('🔥🔥🔥««««« getId »»»»»🚀🚀🚀', socket.id);
 
-  socket.on('sendDataClient', (data) => { // Handle khi có sự kiện tên là sendDataClient từ phía client
-    socketIO.emit('sendDataServer', { data });// phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
-  });
+  // socket.on('sendDataClient', (data) => { // Handle khi có sự kiện tên là sendDataClient từ phía client
+  //   socketIO.emit('sendDataServer', { data });// phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
+  // });
 
-  socket.on('disconnect', () => {
-    console.log('🔥🔥🔥««««« Client disconnected »»»»»🚀🚀🚀');
-  });
+  // socket.on('disconnect', () => {
+  //   console.log('🔥🔥🔥««««« Client disconnected »»»»»🚀🚀🚀');
+  // });
 });
 
 global.io = socketIO;

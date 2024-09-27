@@ -1,10 +1,10 @@
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-template-curly-in-string */
 const yup = require('yup');
-// const { ObjectId } = require('mongodb');
+const { REGEX } = require('../../../../constants');
 
 module.exports = {
-  createSchema: yup.object({
+  registerSchema: yup.object({
     body: yup.object({
       firstName: yup.string().required().max(50, 'Họ được vượt quá 50 ký tự'),
 
@@ -12,7 +12,7 @@ module.exports = {
 
       email: yup.string()
         .required()
-        // .email()
+        .email()
         .test('email type', '${path} Không phải email hợp lệ', (value) => {
           const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
@@ -27,16 +27,31 @@ module.exports = {
           return phoneRegex.test(value);
         }),
 
-      address: yup.string()
-        .required()
-        .max(500, 'Địa chỉ không được vượt quá 500 ký tự'),
+      birthday: yup
+        .date()
+        .test(
+          'birthDay type',
+          'Người dùng chưa ra đời',
+          (value) => {
+            if (value) {
+              const today = new Date();
+              const selectedDate = new Date(value);
+              return selectedDate <= today;
+            }
+            return true;
+          },
+        ),
 
-      birthday: yup.date(),
+      password: yup
+        .string()
+        .required('Mật khẩu mới: không được để trống')
+        .test('password type', 'Mật khẩu mới: không hợp lệ', (value) => {
+          const passwordRegex = REGEX.PASSWORD;
 
-      password: yup.string()
-        .required()
-        .min(3, 'Không được ít hơn 3 ký tự')
-        .max(12, 'Không được vượt quá 12 ký tự'),
+          return passwordRegex.test(value);
+        })
+        .min(8)
+        .max(20),
     }),
   }),
 
@@ -44,17 +59,17 @@ module.exports = {
     body: yup.object({
       email: yup.string()
         .required()
-        .email(),
-      // .test('email type', '${path} Không phải email hợp lệ', (value) => {
-      //   const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+        .email()
+        .test('email type', '${path} Không phải email hợp lệ', (value) => {
+          const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
-      //   return emailRegex.test(value);
-      // }),
+          return emailRegex.test(value);
+        }),
 
       password: yup.string()
         .required()
-        .min(3, 'Không được ít hơn 3 ký tự')
-        .max(12, 'Không được vượt quá 12 ký tự'),
+        .min(8, 'Không được ít hơn 8 ký tự')
+        .max(20, 'Không được vượt quá 20 ký tự'),
     }),
   }),
 };

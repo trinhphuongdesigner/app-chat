@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const { ExtractJwt } = require('passport-jwt');
 // const { BasicStrategy } = require('passport-http');
 
-const jwtSettings = require('../constants/jwtSetting.js');
+const jwtSettings = require('../constants/jwtSetting');
 const { User } = require('../models');
 
 const passportVerifyToken = new JwtStrategy(
@@ -12,11 +12,13 @@ const passportVerifyToken = new JwtStrategy(
     secretOrKey: jwtSettings.SECRET,
   },
   async (payload, done) => {
+    console.log('🔥🔥🔥««««« payload »»»»»🚀🚀🚀', payload);
     try {
       const user = await User.findOne({
         _id: payload._id,
         isActive: true,
       }).select('-password');
+      console.log('🔥🔥🔥««««« user »»»»»🚀🚀🚀', user);
 
       if (!user) return done(null, false);
 
