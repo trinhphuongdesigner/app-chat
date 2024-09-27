@@ -33,7 +33,7 @@ userGroupSchema.virtual('user', {
   justOne: true,
 });
 
-userGroupSchema.virtual('userGroups', {
+userGroupSchema.virtual('groups', {
   ref: 'groups',
   localField: 'groupId',
   foreignField: '_id',

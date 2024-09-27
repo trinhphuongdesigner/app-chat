@@ -1,15 +1,13 @@
 /* eslint-disable camelcase */
 const express = require('express');
-const passport = require('passport');
 
 const router = express.Router();
 
 const middleware = require('./middleware');
 
-const v1_0_Routes = require('./v1.0/routes');
+const v1_routes = require('./v1.0/routes');
 
-router.use('/v1.0', v1_0_Routes);
-router.use('/customers', passport.authenticate('jwt', { session: false }), v1_0_Routes);
+router.use('/v1.0', v1_routes);
 
 router.use(middleware.catch404);
 router.use(middleware.catchError);

@@ -32,21 +32,21 @@ const messageSchema = new Schema(
   },
 );
 
-messageSchema.virtual('senderId', {
+messageSchema.virtual('sender', {
   ref: 'users',
   localField: 'senderId',
   foreignField: '_id',
   justOne: true,
 });
 
-messageSchema.virtual('groupId', {
+messageSchema.virtual('group', {
   ref: 'groups',
   localField: 'groupId',
   foreignField: '_id',
   justOne: true,
 });
 
-messageSchema.virtual('parentMessageId', {
+messageSchema.virtual('parentMessage', {
   ref: 'messages',
   localField: 'parentMessageId',
   foreignField: '_id',

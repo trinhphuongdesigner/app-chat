@@ -77,13 +77,6 @@ userSchema.virtual('fullName').get(function () {
   return `${this.lastName} ${this.firstName}`;
 });
 
-userSchema.virtual('role', {
-  ref: 'roles',
-  localField: 'roleId',
-  foreignField: '_id',
-  justOne: true,
-});
-
 async function hashPassword(value) {
   if (value) {
     const salt = await bcrypt.genSalt(10);
