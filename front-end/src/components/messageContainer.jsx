@@ -95,12 +95,14 @@ function MessageContainer() {
   return (
     <div className="MessageContainer">
       <div className="messageSeperator">Yesterday</div>
+
       {list.map((mess) => (
         <div className={`message ${mess.isMySender ? "me" : "you"}`}>
           <p className="messageContent">{mess.messageContent}</p>
 
           <div className="messageDetails">
             <div className="messageTime">{mess.time}</div>
+
             {mess.isRead && <i className="fa-solid fa-check" />}
           </div>
         </div>

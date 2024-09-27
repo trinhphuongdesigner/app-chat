@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import socketIOClient from "socket.io-client";
 import ChatUI from "./chat/chatUI";
 
-const host = "http://localhost:3000";
+const host = "http://localhost:3200";
 // https://codepen.io/MuzammalAhmed/pen/qBvdwVq
 // https://codepen.io/dagalti/pen/NQPmaG
 
