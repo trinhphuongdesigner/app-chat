@@ -14,7 +14,7 @@ const generateToken = (user) => {
       // name: user.firstName,
       // algorithm,
     },
-    jwtSettings.SECRET,
+    jwtSettings.JWT_SECRET,
     {
       expiresIn,
     },
@@ -24,7 +24,7 @@ const generateToken = (user) => {
 const generateRefreshToken = (id) => {
   const expiresIn = '30d';
 
-  return JWT.sign({ id }, jwtSettings.SECRET, { expiresIn });
+  return JWT.sign({ id }, jwtSettings.JWT_SECRET, { expiresIn });
 };
 
 module.exports = {

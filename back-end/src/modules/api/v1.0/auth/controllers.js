@@ -69,7 +69,7 @@ module.exports = {
     try {
       const { refreshToken } = req.body;
 
-      JWT.verify(refreshToken, jwtSettings.SECRET, async (err, payload) => {
+      JWT.verify(refreshToken, jwtSettings.JWT_SECRET, async (err, payload) => {
         if (err) {
           return res.status(401).json({
             message: 'refreshToken is invalid',
@@ -116,8 +116,8 @@ module.exports = {
   },
 
   getMe: async (req, res) => {
+    console.log('🔥🔥🔥««««« helooooooooooooo »»»»»🚀🚀🚀');
     try {
-      console.log('🔥🔥🔥««««« helooooooooooooo »»»»»🚀🚀🚀');
       res.status(200).json({
         message: 'Lấy thông tin người dùng thành công',
         payload: req.user,

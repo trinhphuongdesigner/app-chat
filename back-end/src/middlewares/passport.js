@@ -9,7 +9,7 @@ const { User } = require('../models');
 const passportVerifyToken = new JwtStrategy(
   {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken('Authorization'),
-    secretOrKey: jwtSettings.SECRET,
+    secretOrKey: jwtSettings.JWT_SECRET,
   },
   async (payload, done) => {
     console.log('🔥🔥🔥««««« payload »»»»»🚀🚀🚀', payload);
@@ -24,6 +24,7 @@ const passportVerifyToken = new JwtStrategy(
 
       return done(null, user);
     } catch (error) {
+      console.log('««««« error »»»»»', error);
       done(error, false);
     }
   },
