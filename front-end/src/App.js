@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import socketIOClient from "socket.io-client";
+import ChatUI from "./chat/chatUI";
 
 const host = "http://localhost:3000";
 // https://codepen.io/MuzammalAhmed/pen/qBvdwVq
@@ -7,21 +8,21 @@ const host = "http://localhost:3000";
 
 function App() {
   const [mess, setMess] = useState([]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [id, setId] = useState();
 
   const socketRef = useRef();
 
   useEffect(() => {
-    socketRef.current = socketIOClient.connect(host)
+    socketRef.current = socketIOClient.connect(host);
 
-    socketRef.current.on('getId', data => {
-      setId(data)
-    }) // phần này đơn giản để gán id cho mỗi phiên kết nối vào page. Mục đích chính là để phân biệt đoạn nào là của mình đang chat.
+    socketRef.current.on("getId", (data) => {
+      setId(data);
+    }); // phần này đơn giản để gán id cho mỗi phiên kết nối vào page. Mục đích chính là để phân biệt đoạn nào là của mình đang chat.
 
-    socketRef.current.on('sendDataServer', dataGot => {
-      setMess(oldMsgs => [...oldMsgs, dataGot.data])
-    }) // mỗi khi có tin nhắn thì mess sẽ được render thêm 
+    socketRef.current.on("sendDataServer", (dataGot) => {
+      setMess((oldMsgs) => [...oldMsgs, dataGot.data]);
+    }); // mỗi khi có tin nhắn thì mess sẽ được render thêm
 
     return () => {
       socketRef.current.disconnect();
@@ -32,45 +33,47 @@ function App() {
     if (message !== null) {
       const msg = {
         content: message,
-        id: id
-      }
+        id: id,
+      };
 
-      socketRef.current.emit('sendDataClient', msg)
+      socketRef.current.emit("sendDataClient", msg);
 
       /*Khi emit('sendDataClient') bên phía server sẽ nhận được sự kiện có tên 'sendDataClient' và handle như câu lệnh trong file index.js
             socket.on("sendDataClient", function(data) { // Handle khi có sự kiện tên là sendDataClient từ phía client
               socketIo.emit("sendDataServer", { data });// phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
             })
       */
-      setMessage('')
+      setMessage("");
     }
-  }
+  };
 
-  const renderMess = mess.map((m, index) =>
+  const renderMess = mess.map((m, index) => (
     <div
       key={index}
-      className={`${m.id === id ? 'your-message' : 'other-people'} chat-item`}
+      className={`${m.id === id ? "your-message" : "other-people"} chat-item`}
     >
       {m.content}
     </div>
-  )
+  ));
 
-  return (<div className="box-chat">
-    <div className="box-chat_message">
-      {renderMess}
-    </div>
+  return (
+    <>
+      <ChatUI />
 
-    <div className="send-box">
-      <textarea
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Nhập tin nhắn ..."
-      />
-      <button onClick={sendMessage}>
-        Send
-      </button>
-    </div>
-  </div>);
+      {/* <div className="box-chat">
+        <div className="box-chat_message">{renderMess}</div>
+
+        <div className="send-box">
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Nhập tin nhắn ..."
+          />
+          <button onClick={sendMessage}>Send</button>
+        </div>
+      </div> */}
+    </>
+  );
 }
 
 export default App;
