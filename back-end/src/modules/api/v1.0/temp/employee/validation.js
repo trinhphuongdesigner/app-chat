@@ -1,6 +1,6 @@
 const yup = require('yup');
 const { ObjectId } = require('mongodb');
-const { REGEX } = require('../../../../constants');
+const { REGEX } = require('../../../../../constants');
 
 module.exports = {
   createEmployeeSchema: yup.object({

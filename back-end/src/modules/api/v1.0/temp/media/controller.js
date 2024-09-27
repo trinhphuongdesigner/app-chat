@@ -1,14 +1,14 @@
 const { PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
-const { S3 } = require('../../../../services/s3');
-const { Media } = require('../../../../models');
+const { S3 } = require('../../../../../services/s3');
+const { Media } = require('../../../../../models');
 const {
   fuzzySearch,
   apiResponse,
   isMongoId,
   asyncForEach,
   generateUniqueFileName,
-} = require('../../../../helpers');
-const { PAGINATION } = require('../../../../constants');
+} = require('../../../../../helpers');
+const { PAGINATION } = require('../../../../../constants');
 
 module.exports = {
   uploadSingleMedia: async (req, res, next) => {

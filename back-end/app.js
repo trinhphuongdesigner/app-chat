@@ -2,10 +2,15 @@ const fs = require('fs');
 const http = require('http');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const passport = require('passport');
 require('dotenv').config();
-
 const helpers = require('./src/helpers');
 const app = require('./config/express');
+const {
+  passportVerifyToken,
+  passportVerifyAccount,
+  // passportConfigBasic,
+} = require('./src/middlewares/passport');
 
 const server = http.createServer(app);
 
@@ -44,6 +49,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const routes = require('./src/modules/routes');
+
+passport.use(passportVerifyToken);
+passport.use(passportVerifyAccount);
+// passport.use(passportConfigBasic);
 
 app.use('/admin', (req, res, next) => {
   res.locals.formatDate = helpers.formatDate;

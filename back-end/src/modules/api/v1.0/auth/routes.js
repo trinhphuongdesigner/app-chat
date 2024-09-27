@@ -1,48 +1,47 @@
 const express = require('express');
-const rateLimit = require('express-rate-limit');
+const passport = require('passport');
 
 const router = express.Router();
 
+// const { validateSchema } = require('../../utils');
 const {
-  onLogin,
-  onRefreshLoginToken,
-  onRegister,
-  //  verifyEmail,
-  handleForgotPassword,
-  resetPassword,
-} = require('./controllers');
-
-const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour window
-  max: 10, // start blocking after 10 requests
-  message:
-    'Too many accounts created from this IP, please try again after an hour',
-});
-
-const {
-  checkLogin,
-  checkRefreshToken,
-  checkRegister,
-  // checkActivateAccount,
-  checkForgetPassword,
-  checkResetPassword,
+  loginSchema,
 } = require('./validations');
-
-const { handleValidate } = require('../middleware');
+const {
+  login,
+  checkRefreshToken,
+  getMe,
+  basicLogin,
+  getMyOrder,
+} = require('./controllers');
+const { validateSchema } = require('../../../../helpers');
 
 router.route('/login')
-  .post(checkLogin, handleValidate, onLogin);
+  .post(
+    validateSchema(loginSchema), // Kiểm tra cơ bản
+    passport.authenticate('local', { session: false }), // passportVerifyAccount => Kiểm tra tk và mk hợp lệ
+    login,
+  );
 
-router.route('/token')
-  .post(checkRefreshToken, handleValidate, onRefreshLoginToken);
+router.route('/refresh-token')
+  .post(checkRefreshToken);
 
-router.route('/register')
-  .post(checkRegister, handleValidate, onRegister);
+router.route('/basic')
+  .post(
+    passport.authenticate('basic', { session: false }),
+    basicLogin,
+  );
 
-// router.get('/activate', authLimiter, checkActivateAccount, handleValidate, verifyEmail);
+router.route('/profile')
+  .get(
+    passport.authenticate('jwt', { session: false }),
+    getMe,
+  );
 
-router.post('/forgot-password', authLimiter, checkForgetPassword, handleValidate, handleForgotPassword);
-
-router.post('/reset-password', authLimiter, checkResetPassword, handleValidate, resetPassword);
+router.route('/my-orders')
+  .get(
+    passport.authenticate('jwt', { session: false }),
+    getMyOrder,
+  );
 
 module.exports = router;

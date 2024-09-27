@@ -1,13 +1,13 @@
-const { Role } = require('../../../../models');
-const { permissionGroups } = require('../../../../helpers/permission');
+const { Role } = require('../../../../../models');
+const { permissionGroups } = require('../../../../../helpers/permission');
 const {
   apiErrors,
   apiResponse,
   fuzzySearch,
   isMongoId,
   asyncForEach,
-} = require('../../../../helpers/index');
-const { PAGINATION } = require('../../../../constants');
+} = require('../../../../../helpers/index');
+const { PAGINATION } = require('../../../../../constants');
 
 module.exports = {
   createRole: async (req, res, next) => {

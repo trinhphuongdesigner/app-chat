@@ -1,13 +1,13 @@
-const { Supplier } = require('../../../../models');
+const { Supplier } = require('../../../../../models');
 const {
   apiResponse,
   fuzzySearch,
   isMongoId,
   asyncForEach,
-} = require('../../../../helpers');
-const { processMedia } = require('../middleware');
+} = require('../../../../../helpers');
+const { processMedia } = require('../../middleware');
 const { deleteMedia } = require('../media/controller');
-const { PAGINATION } = require('../../../../constants');
+const { PAGINATION } = require('../../../../../constants');
 
 module.exports = {
   createSupplier: async (req, res, next) => {

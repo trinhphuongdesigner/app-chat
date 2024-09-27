@@ -12,7 +12,7 @@ const {
   deleteRole,
   deleteRoles,
 } = require('./controllers');
-const { validateSchema, checkIdSchema } = require('../../../../helpers');
+const { validateSchema, checkIdSchema } = require('../../../../../helpers');
 
 const { roleSchema, checkArrayIdSchema } = require('./validations');
 

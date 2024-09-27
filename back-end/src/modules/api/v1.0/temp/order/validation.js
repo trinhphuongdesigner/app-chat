@@ -1,6 +1,6 @@
 const yup = require('yup');
 const { ObjectId } = require('mongodb');
-const { PAYMENT_TYPE, STATUS } = require('../../../../constants');
+const { PAYMENT_TYPE, STATUS } = require('../../../../../constants');
 
 const {
   CANCEL, REJECTED, FAILED, RESTOCKED, ...CREATE_STATUS

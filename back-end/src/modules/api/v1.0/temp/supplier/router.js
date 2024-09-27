@@ -1,5 +1,5 @@
 const express = require('express');
-const { processFormData } = require('../../../../services/s3');
+const { processFormData } = require('../../../../../services/s3');
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ const {
   checkIdSchema,
   checkArrayIdSchema,
   checkAvatarSchema,
-} = require('../../../../helpers');
+} = require('../../../../../helpers');
 
 router
   .route('/create')

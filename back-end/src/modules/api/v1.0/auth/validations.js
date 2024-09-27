@@ -1,103 +1,60 @@
-const { check, query } = require('express-validator');
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-template-curly-in-string */
+const yup = require('yup');
+// const { ObjectId } = require('mongodb');
 
 module.exports = {
-  checkLogin: [
-    check('email')
-      .not().isEmpty().withMessage('Email không được để trống')
-      .isEmail()
-      .withMessage('Email không đúng định dạng')
-      .isLength({ max: 50 })
-      .withMessage('Email chỉ được nhập tối đa 50 kí tự'),
-    check('password').not().isEmpty().withMessage('Mật khẩu không được để trống')
-      .custom((value) => {
-        if (!/\s/g.test(value)) {
-          return true;
-        }
-        throw new Error('Mật khẩu không được chứa kí tự trống');
-      }),
-  ],
+  createSchema: yup.object({
+    body: yup.object({
+      firstName: yup.string().required().max(50, 'Họ được vượt quá 50 ký tự'),
 
-  checkRefreshToken: [
-    check('refreshToken')
-      .not().isEmpty().withMessage('Refresh Token không được để trống'),
-  ],
+      lastName: yup.string().required().max(50, 'Tên được vượt quá 50 ký tự'),
 
-  checkRegister: [
-    check('firstName')
-      .trim().not().isEmpty()
-      .withMessage('Tên không được để trống')
-      .isLength({ max: 150 })
-      .withMessage('Tên chỉ được nhập tối đa 150 kí tự')
-      .custom((value) => {
-        if (!value || /^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]+$/.test(value)) {
-          return true;
-        }
-        throw new Error('Tên không thể chưa kí tự đặc biệt');
-      }),
-    check('lastName').trim().isLength({ max: 150 }).withMessage('Tên chỉ được nhập tối đa 150 kí tự')
-      .custom((value) => {
-        if (!value || /^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]+$/.test(value)) {
-          return true;
-        }
-        throw new Error('Tên không thể chưa kí tự đặc biệt');
-      }),
-    check('middleName').trim().isLength({ max: 150 }).withMessage('Tên chỉ được nhập tối đa 150 kí tự')
-      .custom((value) => {
-        if (!value || /^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]+$/.test(value)) {
-          return true;
-        }
-        throw new Error('Tên không thể chưa kí tự đặc biệt');
-      }),
-    check('email')
-      .not().isEmpty().withMessage('Email không được để trống')
-      .isEmail()
-      .withMessage('Email không đúng định dạng')
-      .isLength({ max: 50 })
-      .withMessage('Email chỉ được nhập tối đa 50 kí tự'),
-    check('password')
-      .not().isEmpty().withMessage('Mật khẩu không được để trống')
-      .isLength({ min: 6 })
-      .withMessage('Mật khẩu phải có tối thiểu 6 kí tự')
-      .custom((value) => {
-        if (!/\s/g.test(value)) {
-          return true;
-        }
-        throw new Error('Mật khẩu không được chứa kí tự trống');
-      }),
-    check('confirmPassword', 'Mật khẩu xác thực không khớp').custom((value, { req }) => (req.body.password === value)),
-  ],
+      email: yup.string()
+        .required()
+        // .email()
+        .test('email type', '${path} Không phải email hợp lệ', (value) => {
+          const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
-  checkActivateAccount: [
-    query('token').not().isEmpty().withMessage('Thông tin xác thực không được để trống')
-      .isString()
-      .withMessage('Thông tin xác thực không hợp lệ'),
-  ],
+          return emailRegex.test(value);
+        }),
 
-  checkForgetPassword: [
-    check('email').not().isEmpty().withMessage('Email không được để trống')
-      .isEmail()
-      .withMessage('Email không hợp lệ')
-      .isLength({ max: 50 })
-      .withMessage('Email chỉ được nhập tối đa 50 kí tự'),
-  ],
+      phoneNumber: yup.string()
+        .required()
+        .test('phoneNumber type', '${path} Không phải số điện thoại hợp lệ', (value) => {
+          const phoneRegex = /^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/;
 
-  checkResetPassword: [
-    check('token').not().isEmpty().withMessage('Thông tin xác thực không được để trống')
-      .isString()
-      .withMessage('Thông tin xác thực không hợp lệ'),
-    check('password').not().isEmpty().withMessage('Mật khẩu không được để trống')
-      .isString()
-      .withMessage('Mật khẩu không hợp lệ')
-      .isLength({ min: 6 })
-      .withMessage('Mật khẩu phải có tối thiểu 6 kí tự')
-      .custom((value) => {
-        if (!/\s/g.test(value)) {
-          return true;
-        }
-        throw new Error('Mật khẩu không được chứa kí tự trống');
-      }),
-    check('confirmPassword').not().isEmpty().withMessage('Bạn phải xác nhận mật khẩu')
-      .custom((value, { req }) => (req.check.password === value))
-      .withMessage('Mật khẩu xác thực không khớp'),
-  ],
+          return phoneRegex.test(value);
+        }),
+
+      address: yup.string()
+        .required()
+        .max(500, 'Địa chỉ không được vượt quá 500 ký tự'),
+
+      birthday: yup.date(),
+
+      password: yup.string()
+        .required()
+        .min(3, 'Không được ít hơn 3 ký tự')
+        .max(12, 'Không được vượt quá 12 ký tự'),
+    }),
+  }),
+
+  loginSchema: yup.object({
+    body: yup.object({
+      email: yup.string()
+        .required()
+        .email(),
+      // .test('email type', '${path} Không phải email hợp lệ', (value) => {
+      //   const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+
+      //   return emailRegex.test(value);
+      // }),
+
+      password: yup.string()
+        .required()
+        .min(3, 'Không được ít hơn 3 ký tự')
+        .max(12, 'Không được vượt quá 12 ký tự'),
+    }),
+  }),
 };
