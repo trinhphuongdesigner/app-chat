@@ -1,0 +1,367 @@
+$color_1: #00f5d4;
+$color_2: white;
+$color_3: #b0b0b0;
+$color_4: #000000;
+$color_5: #c3c1c1;
+$color_6: rgb(38, 38, 38);
+$color_7: #036666;
+$font-family_1: Roboto;
+$background-color_1: #00f5d424;
+$background-color_2: #9090903a;
+$background-color_3: transparent;
+$background-color_4: #b0b0b0;
+$background-color_5: #00f5d4;
+$background-color_6: white;
+$background-color_7: #ffffff21;
+$background-color_8: #ebebebc6;
+$background-color_9: #00a8979e;
+$background-color_10: #dee2e6;
+$background-color_11: #036666;
+
+.sideNav1 {
+  display: flex;
+  backdrop-filter: blur(55px);
+  list-style: none;
+  flex-direction: column;
+  font-size: 1.5rem;
+  box-shadow: var(--box-shadow);
+  border-radius: 10px;
+  align-items: center;
+  padding: 0px;
+  width: calc(100% - 10px);
+  gap: 5px;
+  padding: 10px 0px;
+  justify-content: center;
+  height: fit-content;
+  border: 1px solid #ffffff21;
+
+  li {
+    padding: 13px 0px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition-duration: 0.27s;
+    margin: 0px;
+    width: calc(100% - 10px);
+    font-size: 1.3rem;
+    display: flex;
+    justify-content: center;
+
+    &:hover {
+      color: $color_1;
+      background-color: $background-color_1;
+    }
+  }
+
+  li.active {
+    color: $color_1;
+    background-color: $background-color_1;
+  }
+}
+
+.sideNav2 {
+  height: 100%;
+  box-shadow: var(--box-shadow);
+  backdrop-filter: blur(55px);
+  border-radius: 10px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  overflow: auto;
+  border: 1px solid #ffffff21;
+}
+
+.chatFilterGroup {
+  background: url("https://4kwallpapers.com/images/walls/thumbs_3t/12662.jpg");
+  position: sticky;
+  top: 0;
+}
+
+.chatFilters {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  padding-bottom: 0px;
+
+  h2 {
+    color: $color_1;
+    font-size: 1.8rem;
+    margin-right: auto;
+  }
+
+  i {
+    padding: 15px;
+    cursor: pointer;
+    font-size: larger;
+    border-radius: 5px;
+
+    &:hover {
+      background-color: $background-color_2;
+    }
+  }
+}
+
+section {
+  box-shadow: var(--box-shadow);
+  width: 100%;
+  border-radius: 10px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  height: 100%;
+  backdrop-filter: blur(55px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ffffff21;
+  overflow: auto;
+}
+
+.SearchInputHolder {
+  position: relative;
+
+  i {
+    position: absolute;
+    bottom: 10px;
+    left: 25px;
+  }
+
+  hr {
+    content: "";
+    width: calc(100% - 40px);
+    height: 2px;
+    border-radius: 5px;
+    padding: 1px;
+    position: absolute;
+    z-index: 100;
+    left: 20px;
+    background-color: $background-color_4;
+    border: none;
+    bottom: 0px;
+  }
+
+  .searchInput {
+    &:focus+hr {
+      background-color: $background-color_5;
+      color: $color_1;
+    }
+  }
+}
+
+.searchInput {
+  width: calc(100% - 40px);
+  padding: 7px;
+  border: none;
+  background-color: $background-color_3;
+  color: $color_2;
+  font-family: $font-family_1;
+  transition-duration: 0.25s;
+  border-radius: 5px;
+  padding-left: 30px;
+  margin: 5px 20px;
+  position: relative;
+
+  &::placeholder {
+    color: $color_3;
+  }
+
+  &:focus {
+    color: $color_1;
+    outline: none;
+  }
+}
+
+.group {
+  display: grid;
+  grid-template-columns: 55px calc(100% - 55px);
+  grid-template-rows: repeat(2, 30px);
+  width: calc(100% - 20px);
+  margin: 10px;
+  padding: 10px;
+  list-style-type: none;
+  border-radius: 5px;
+  user-select: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $background-color_7;
+  }
+}
+
+.avatar {
+  grid-row: 1/span 2;
+  background-color: $background-color_6;
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  padding: 10px;
+
+  img {
+    height: 80%;
+    width: auto;
+    margin: auto;
+  }
+}
+
+.GroupDescrp {
+  width: 100%;
+  padding: 5px 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.GroupName {
+  font-weight: 900;
+  padding: 5px 10px;
+}
+
+.ChatHead {
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid #ffffff21;
+
+  .group {
+    &:hover {
+      background-color: $background-color_3;
+    }
+
+    width: 300px;
+    display: flex;
+    align-items: center;
+
+    .GroupName {
+      font-size: 1.3rem;
+      padding-left: 20px;
+    }
+
+    .avatar {
+      padding: 5px;
+      height: 40px;
+      width: 40px;
+    }
+  }
+}
+
+.callGroup {
+  margin-left: auto;
+  padding: 10px;
+  font-size: 1rem;
+
+  i {
+    padding: 15px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $background-color_2;
+    }
+  }
+}
+
+.MessageContainer {
+  flex: 1;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+  flex-direction: column;
+  overflow: auto;
+
+  span {
+    margin-bottom: auto;
+  }
+}
+
+#MessageForm {
+  padding: 10px;
+  display: flex;
+  width: 100%;
+
+  input {
+    padding: 10px;
+    flex: 1;
+    border-radius: 10px;
+    border: none;
+    background-color: $background-color_8;
+
+    &:focus {
+      outline: none;
+      border: 1px solid #00f5d4;
+    }
+  }
+
+  button {
+    padding: 10px 15px;
+    border: none;
+    background-color: $background-color_9;
+    color: $color_2;
+    cursor: pointer;
+    border-radius: 10px;
+    margin: 0px 5px;
+    font-size: 1.2rem;
+  }
+}
+
+.message {
+  display: flex;
+  padding: 10px 15px;
+  width: fit-content;
+  flex-direction: column;
+  border-radius: 5px;
+  margin: 5px;
+  position: relative;
+  max-width: 80%;
+
+  i {
+    color: $color_1;
+  }
+}
+
+.you {
+  background-color: $background-color_10;
+  color: $color_4;
+  text-align: left;
+
+  .messageDetails {
+    .messageTime {
+      color: $color_6;
+    }
+  }
+
+  i {
+    color: $color_7;
+  }
+}
+
+.messageDetails {
+  font-size: 0.7rem;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  text-align: right;
+  align-items: center;
+  padding: 2px 0px;
+
+  .messageTime {
+    margin-left: auto;
+    padding-right: 5px;
+    font-weight: 300;
+    color: $color_5;
+  }
+}
+
+.messageContent {
+  font-size: 0.9rem;
+}
+
+.me {
+  margin-left: auto;
+  background-color: $background-color_11;
+  text-align: right;
+}
+
+.messageSeperator {
+  margin: 10px auto;
+  padding: 8px 15px;
+  border-radius: 20px;
+  width: fit-content;
+  background-color: $background-color_11;
+}

@@ -1,0 +1,46 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-param-reassign */
+import axios from 'axios';
+import { LOCATION, REFRESH_TOKEN, TOKEN } from 'utils/constants';
+import { isTokenExpired, refreshAccessToken } from 'utils/token';
+
+const axiosClient = axios.create({
+  baseURL: process.env.REACT_APP_BASE_URL,
+  headers: { 'Content-Type': 'application/json' },
+});
+
+axiosClient.interceptors.request.use(
+  async (config) => {
+    const token = localStorage.getItem(TOKEN);
+    const refreshToken = localStorage.getItem(REFRESH_TOKEN);
+
+    if (!refreshToken && isTokenExpired(refreshToken)) {
+      localStorage.removeItem(TOKEN);
+      localStorage.removeItem(REFRESH_TOKEN);
+
+      window.location.href = LOCATION.FORM_LOGIN;
+
+      return;
+    }
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    if (token && isTokenExpired(token)) {
+      const newToken = await refreshAccessToken(refreshToken);
+
+      if (newToken) {
+        localStorage.setItem(TOKEN, newToken);
+        config.headers.Authorization = `Bearer ${newToken}`;
+      }
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
+export default axiosClient;

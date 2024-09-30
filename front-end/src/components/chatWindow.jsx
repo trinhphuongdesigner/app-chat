@@ -1,7 +1,7 @@
-import React from "react";
-import ChatHead from "./chatHead";
-import MessageContainer from "./messageContainer";
-import MessageForm from "./messageForm";
+import React from 'react';
+import ChatHead from 'components/chatHead';
+import MessageContainer from 'components/messageContainer';
+import MessageForm from 'components/messageForm';
 
 function ChatWindow() {
   return (

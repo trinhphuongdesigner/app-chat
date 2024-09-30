@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 function ChatHead() {
   return (
@@ -10,8 +10,8 @@ function ChatHead() {
         <p className="GroupName">David Johnson</p>
       </li>
       <div className="callGroup">
-        <i className="fa-solid fa-phone"></i>
-        <i className="fa-solid fa-video"></i>
+        <i className="fa-solid fa-phone" />
+        <i className="fa-solid fa-video" />
       </div>
     </div>
   );
