@@ -14,7 +14,7 @@ axiosClient.interceptors.request.use(
     const token = localStorage.getItem(TOKEN);
     const refreshToken = localStorage.getItem(REFRESH_TOKEN);
 
-    if (!refreshToken && isTokenExpired(refreshToken)) {
+    if (refreshToken && isTokenExpired(refreshToken)) {
       localStorage.removeItem(TOKEN);
       localStorage.removeItem(REFRESH_TOKEN);
 

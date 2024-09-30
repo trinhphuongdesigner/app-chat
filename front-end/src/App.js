@@ -62,8 +62,8 @@ function App() {
   return (
     <>
       {/* <ChatUI /> */}
-      <Login />
-      {/* <Register /> */}
+      {/* <Login /> */}
+      <Register />
 
       {/* <div className="box-chat">
         <div className="box-chat_message">{renderMess}</div>

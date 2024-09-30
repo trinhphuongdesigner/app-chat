@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 
+import './index.scss';
+
 function InputValidation(props) {
   const {
     type = 'text',
@@ -13,8 +15,9 @@ function InputValidation(props) {
   } = props;
 
   return (
-    <div className="input-field">
+    <div className="input-container">
       <input
+        className="input-field"
         type={type}
         name={name}
         id={name}

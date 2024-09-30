@@ -7,7 +7,6 @@ module.exports = {
   register: async (req, res) => {
     try {
       const {
-        birthday,
         email,
         firstName,
         lastName,
@@ -16,7 +15,6 @@ module.exports = {
       } = req.body;
 
       const newUser = new User({
-        birthday,
         email,
         firstName,
         lastName,
@@ -43,7 +41,6 @@ module.exports = {
         lastName,
         phoneNumber,
         email,
-        birthday,
       } = req.user;
 
       const token = generateUserToken({
@@ -52,7 +49,6 @@ module.exports = {
         lastName,
         phoneNumber,
         email,
-        birthday,
       });
       const refreshToken = generateUserRefreshToken(_id);
 
@@ -89,7 +85,6 @@ module.exports = {
             lastName,
             phoneNumber,
             email,
-            birthday,
           } = user;
 
           const token = generateUserToken({
@@ -98,7 +93,6 @@ module.exports = {
             lastName,
             phoneNumber,
             email,
-            birthday,
           });
 
           return res.status(200).json({ token });

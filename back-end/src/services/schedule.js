@@ -25,7 +25,7 @@ module.exports = {
           },
         })
         .select('friend')
-        .populate('friend', 'firstName lastName avatar birthday')
+        .populate('friend', 'firstName lastName avatar')
         .lean();
 
       await asyncForEach(events, async (event) => {

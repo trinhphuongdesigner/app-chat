@@ -51,9 +51,6 @@ const userSchema = new Schema(
       minLength: [8, 'Mật khẩu ít nhất 8 ký tự'],
       maxLength: [20, 'Mật khẩu không vượt quá 20 ký tự'],
     },
-    birthday: {
-      type: Date,
-    },
     phoneNumber: {
       type: String,
       validate: {

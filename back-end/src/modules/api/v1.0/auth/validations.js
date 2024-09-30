@@ -27,20 +27,20 @@ module.exports = {
           return phoneRegex.test(value);
         }),
 
-      birthday: yup
-        .date()
-        .test(
-          'birthDay type',
-          'Người dùng chưa ra đời',
-          (value) => {
-            if (value) {
-              const today = new Date();
-              const selectedDate = new Date(value);
-              return selectedDate <= today;
-            }
-            return true;
-          },
-        ),
+      // birthday: yup
+      //   .date()
+      //   .test(
+      //     'birthDay type',
+      //     'Người dùng chưa ra đời',
+      //     (value) => {
+      //       if (value) {
+      //         const today = new Date();
+      //         const selectedDate = new Date(value);
+      //         return selectedDate <= today;
+      //       }
+      //       return true;
+      //     },
+      //   ),
 
       password: yup
         .string()

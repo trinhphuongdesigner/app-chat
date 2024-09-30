@@ -19,8 +19,6 @@ function Login() {
   const {
     register,
     handleSubmit,
-    // setValue,
-    // getValues,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -31,6 +29,7 @@ function Login() {
   const onSubmit = async (data) => {
     try {
       const { email, pass } = data;
+
       const response = await axiosClient.post(API.LOGIN, {
         email,
         password: pass,
@@ -65,13 +64,11 @@ function Login() {
             errors={errors}
           />
 
-          <button type="submit" id="submit">
-            LOGIN
-          </button>
+          <button type="submit">Đăng nhập</button>
 
           <div className="link-action">
-            <span>Not registered? </span>
-            <Link to={LOCATION.REGISTER}>Create an account</Link>
+            <span>Chưa có tài khoản? </span>
+            <Link to={LOCATION.REGISTER}>Tạo tài khoản</Link>
           </div>
         </form>
       </div>
