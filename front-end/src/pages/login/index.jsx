@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import InputValidation from 'components/Validation/Input';
+import { handleErrorResponse } from 'utils';
 import axiosClient from 'utils/axiosClient';
 import { API, LOCATION, REFRESH_TOKEN, TOKEN } from 'utils/constants';
 import yup from 'utils/yupGlobal';
@@ -10,9 +11,9 @@ import yup from 'utils/yupGlobal';
 import './index.scss';
 
 const loginSchema = yup.object().shape({
-  email: yup.string().required('Required').email('Email không hợp lệ'),
+  email: yup.string().isValidEmail(),
 
-  pass: yup.string().required('Required'),
+  password: yup.string().isValidPassword(),
 });
 
 function Login() {
@@ -28,11 +29,11 @@ function Login() {
 
   const onSubmit = async (data) => {
     try {
-      const { email, pass } = data;
+      const { email, password } = data;
 
       const response = await axiosClient.post(API.LOGIN, {
         email,
-        password: pass,
+        password,
       });
 
       const { refreshToken, token } = response.data;
@@ -41,7 +42,7 @@ function Login() {
       localStorage.setItem(REFRESH_TOKEN, refreshToken);
       navigate(LOCATION.HOME);
     } catch (error) {
-      console.log('««««« error »»»»»', error);
+      handleErrorResponse(error, 'Đăng nhập không thành công');
     }
   };
 
@@ -58,7 +59,7 @@ function Login() {
 
           <InputValidation
             type="password"
-            name="pass"
+            name="password"
             placeholder="Password"
             register={register}
             errors={errors}
@@ -67,7 +68,7 @@ function Login() {
           <button type="submit">Đăng nhập</button>
 
           <div className="link-action">
-            <span>Chưa có tài khoản? </span>
+            <span>Chưa có tài khoản?</span>
             <Link to={LOCATION.REGISTER}>Tạo tài khoản</Link>
           </div>
         </form>

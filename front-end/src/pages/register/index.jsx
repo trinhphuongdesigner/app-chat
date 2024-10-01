@@ -1,34 +1,23 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
-import { yupResolver } from '@hookform/resolvers/yup';
 import InputValidation from 'components/Validation/Input';
 import axiosClient from 'utils/axiosClient';
-import { API, LOCATION } from 'utils/constants';
 import yup from 'utils/yupGlobal';
+import { API, LOCATION } from 'utils/constants';
+import { Link, useNavigate } from 'react-router-dom';
+import { handleErrorResponse } from 'utils';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import './index.scss';
 
 const registerSchema = yup.object().shape({
-  firstName: yup
-    .string()
-    .required('Không được bỏ trống')
-    .max(50, 'Họ được vượt quá 50 ký tự'),
+  firstName: yup.string().isValidName('Họ'),
 
-  lastName: yup
-    .string()
-    .required('Không được bỏ trống')
-    .max(50, 'Tên được vượt quá 50 ký tự'),
+  lastName: yup.string().isValidName('Tên'),
 
-  email: yup
-    .string()
-    .required('Không được bỏ trống')
-    .email('Email không hợp lệ'),
+  email: yup.string().isValidEmail(),
 
-  phoneNumber: yup
-    .string()
-    .required('Không được bỏ trống')
-    .email('Số điện thoại không hợp lệ'),
+  phoneNumber: yup.string().isValidVNPhoneNumber(),
 
   password: yup.string().isValidPassword(),
 
@@ -52,7 +41,7 @@ function Register() {
     try {
       const { firstName, lastName, email, password, phoneNumber } = data;
 
-      const response = await axiosClient.post(API.REGISTER, {
+      await axiosClient.post(API.REGISTER, {
         firstName,
         lastName,
         phoneNumber,
@@ -60,11 +49,9 @@ function Register() {
         password,
       });
 
-      console.log('🔥🔥🔥««««« response »»»»»🚀🚀🚀', response);
-
       navigate(LOCATION.LOGIN);
     } catch (error) {
-      console.log('««««« error »»»»»', error);
+      handleErrorResponse(error, 'Đăng ký không thành công');
     }
   };
 
@@ -119,8 +106,8 @@ function Register() {
           <button type="submit">Đăng ký</button>
 
           <div className="link-action">
-            <span>Bạn đã đăng ký?</span>
-            <Link to={LOCATION.REGISTER}>Đăng nhập</Link>
+            <span>Bạn đã có tài khoản?</span>
+            <Link to={LOCATION.LOGIN}>Đăng nhập</Link>
           </div>
         </form>
       </div>

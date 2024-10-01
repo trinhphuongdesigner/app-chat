@@ -1,13 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from 'react';
-import ChatUI from 'chat/chatUI';
-import Login from 'pages/login';
-import Register from 'pages/register';
+import Toast from 'components/Toast';
+import AppRouter from 'router';
 import socketIOClient from 'socket.io-client';
-
-const host = 'http://localhost:3200';
-// https://codepen.io/MuzammalAhmed/pen/qBvdwVq
-// https://codepen.io/dagalti/pen/NQPmaG
 
 function App() {
   const [mess, setMess] = useState([]);
@@ -17,7 +12,7 @@ function App() {
   const socketRef = useRef();
 
   useEffect(() => {
-    socketRef.current = socketIOClient.connect(host);
+    socketRef.current = socketIOClient.connect(process.env.REACT_APP_HOST_URL);
 
     socketRef.current.on('getId', (data) => {
       setId(data);
@@ -61,9 +56,8 @@ function App() {
 
   return (
     <>
-      {/* <ChatUI /> */}
-      {/* <Login /> */}
-      <Register />
+      <Toast />
+      <AppRouter />
 
       {/* <div className="box-chat">
         <div className="box-chat_message">{renderMess}</div>

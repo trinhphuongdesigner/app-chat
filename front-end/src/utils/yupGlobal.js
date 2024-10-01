@@ -10,6 +10,31 @@ const REGEX_ONLY_NUMBER = /^\d+$/;
 const MESS_REQUIRED = 'Không được bỏ trống';
 const MESS_INVALID = 'Không hợp lệ';
 
+function isValidName(fieldName) {
+  return this.max(50, `${fieldName} tối đa 50 ký tự`).required(MESS_REQUIRED);
+}
+
+function onlyNumber(message = MESS_INVALID) {
+  return this.matches(REGEX_ONLY_NUMBER, {
+    message,
+    excludeEmptyString: true,
+  });
+}
+
+function isValidEmail(message = MESS_INVALID) {
+  return this.matches(REGEX_EMAIL, {
+    message,
+    excludeEmptyStrings: true,
+  }).required(MESS_REQUIRED);
+}
+
+function isValidVNPhoneNumber() {
+  return this.matches(REGEX_VN_PHONE_NUMBER, {
+    message: MESS_INVALID,
+    excludeEmptyStrings: true,
+  }).required(MESS_REQUIRED);
+}
+
 function isValidPassword() {
   return this.min(8, 'Mật khẩu quá ngắn')
     .max(20, 'Mật khẩu quá dài')
@@ -20,27 +45,14 @@ function isValidPassword() {
     .required(MESS_REQUIRED);
 }
 
-yup.addMethod(yup.string, 'email', function (message) {
-  return this.matches(REGEX_EMAIL, {
-    message,
-    excludeEmptyString: true,
-  });
-});
+yup.addMethod(yup.string, 'isValidName', isValidName);
+
+yup.addMethod(yup.string, 'isValidEmail', isValidEmail);
 
 yup.addMethod(yup.string, 'isValidPassword', isValidPassword);
 
-yup.addMethod(yup.string, 'phoneNumber', function (message) {
-  return this.matches(REGEX_VN_PHONE_NUMBER, {
-    message,
-    excludeEmptyString: true,
-  });
-});
+yup.addMethod(yup.string, 'isValidVNPhoneNumber', isValidVNPhoneNumber);
 
-yup.addMethod(yup.string, 'onlyNumber', function (message) {
-  return this.matches(REGEX_ONLY_NUMBER, {
-    message,
-    excludeEmptyString: true,
-  });
-});
+yup.addMethod(yup.string, 'onlyNumber', onlyNumber);
 
 export default yup;
