@@ -14,6 +14,16 @@ module.exports = {
         phoneNumber,
       } = req.body;
 
+      const existUser = await User.findOne({
+        email,
+      }).select('-password');
+
+      if (existUser) {
+        return res.send(409, {
+          message: 'Tài khoản đã tồn tại',
+        });
+      }
+
       const newUser = new User({
         email,
         firstName,
@@ -24,7 +34,7 @@ module.exports = {
 
       const payload = await newUser.save();
 
-      res.send(200, {
+      return res.send(200, {
         payload,
         message: 'Đăng kí thành công',
       });

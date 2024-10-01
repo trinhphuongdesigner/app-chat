@@ -12,7 +12,7 @@ export const convertCapitalString = (str) => {
   return mess.charAt(0).toUpperCase() + mess.slice(1).toLowerCase();
 };
 
-export const showSuccess = (mess) => {
+export const showSuccess = (mess = 'Thành công') => {
   toast.success(convertCapitalString(mess));
 };
 

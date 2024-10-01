@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import ChatUI from 'chat/chatUI';
 import Login from 'pages/login';
 import Register from 'pages/register';
@@ -12,16 +12,14 @@ import { LOCATION, TOKEN } from 'utils/constants';
 const routes = [{ path: LOCATION.HOME, element: <ChatUI /> }];
 
 function AppRouter() {
-  const navigate = useNavigate();
-
   const token = window.localStorage.getItem(TOKEN);
 
-  useEffect(() => {
-    if (!token) {
-      navigate(LOCATION.LOGIN);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  // useEffect(() => {
+  //   if (!token) {
+  //     navigate(LOCATION.LOGIN || LOCATION.REGISTER);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [token]);
 
   return (
     <div className="container">

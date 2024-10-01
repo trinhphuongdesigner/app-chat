@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import InputValidation from 'components/Validation/Input';
-import { handleErrorResponse } from 'utils';
+import { handleErrorResponse, showSuccess } from 'utils';
 import axiosClient from 'utils/axiosClient';
 import { API, LOCATION, REFRESH_TOKEN, TOKEN } from 'utils/constants';
 import yup from 'utils/yupGlobal';
@@ -40,6 +40,9 @@ function Login() {
 
       localStorage.setItem(TOKEN, token);
       localStorage.setItem(REFRESH_TOKEN, refreshToken);
+
+      showSuccess('Đăng nhập thành công');
+
       navigate(LOCATION.HOME);
     } catch (error) {
       handleErrorResponse(error, 'Đăng nhập không thành công');

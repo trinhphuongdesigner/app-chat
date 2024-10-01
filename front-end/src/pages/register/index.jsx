@@ -1,12 +1,12 @@
 import React from 'react';
-import InputValidation from 'components/Validation/Input';
-import axiosClient from 'utils/axiosClient';
-import yup from 'utils/yupGlobal';
-import { API, LOCATION } from 'utils/constants';
-import { Link, useNavigate } from 'react-router-dom';
-import { handleErrorResponse } from 'utils';
 import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
+import InputValidation from 'components/Validation/Input';
+import { handleErrorResponse, showSuccess } from 'utils';
+import axiosClient from 'utils/axiosClient';
+import { API, LOCATION } from 'utils/constants';
+import yup from 'utils/yupGlobal';
 
 import './index.scss';
 
@@ -41,13 +41,15 @@ function Register() {
     try {
       const { firstName, lastName, email, password, phoneNumber } = data;
 
-      await axiosClient.post(API.REGISTER, {
+      const response = await axiosClient.post(API.REGISTER, {
         firstName,
         lastName,
         phoneNumber,
         email,
         password,
       });
+
+      showSuccess(response.data.message);
 
       navigate(LOCATION.LOGIN);
     } catch (error) {
