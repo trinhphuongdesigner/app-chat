@@ -23,17 +23,18 @@ axiosClient.interceptors.request.use(
       return;
     }
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (token && isTokenExpired(token)) {
+      const { token, refreshToken } = await refreshAccessToken(refreshToken);
+
+      if (token) {
+        localStorage.setItem(TOKEN, token);
+        localStorage.setItem(REFRESH_TOKEN, refreshToken);
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
 
-    if (token && isTokenExpired(token)) {
-      const newToken = await refreshAccessToken(refreshToken);
-
-      if (newToken) {
-        localStorage.setItem(TOKEN, newToken);
-        config.headers.Authorization = `Bearer ${newToken}`;
-      }
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;

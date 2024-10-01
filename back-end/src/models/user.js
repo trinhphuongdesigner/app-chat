@@ -63,6 +63,9 @@ const userSchema = new Schema(
       },
       unique: [true, 'Số điện thoại là duy nhất'],
     },
+    refreshToken: {
+      type: String,
+    },
   },
   {
     versionKey: false,

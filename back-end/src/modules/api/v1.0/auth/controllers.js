@@ -62,6 +62,8 @@ module.exports = {
       });
       const refreshToken = generateUserRefreshToken(_id);
 
+      await User.findByIdAndUpdate(_id, { refreshToken }, { new: true });
+
       return res.status(200).json({
         token,
         refreshToken,
@@ -81,11 +83,13 @@ module.exports = {
             message: 'refreshToken is invalid',
           });
         }
+
         const { id } = payload;
 
         const user = await User.findOne({
           _id: id,
           isActive: true,
+          refreshToken,
         }).select('-password').lean();
 
         if (user) {
@@ -97,7 +101,7 @@ module.exports = {
             email,
           } = user;
 
-          const token = generateUserToken({
+          const newToken = generateUserToken({
             _id,
             firstName,
             lastName,
@@ -105,8 +109,13 @@ module.exports = {
             email,
           });
 
-          return res.status(200).json({ token });
+          const newRefreshToken = generateUserRefreshToken(_id);
+
+          await User.findByIdAndUpdate(_id, { newRefreshToken }, { new: true });
+
+          return res.status(200).json({ token: newToken, refreshToken: newRefreshToken });
         }
+
         return res.status(401).json({
           message: 'refreshToken is invalid',
         });
@@ -120,14 +129,12 @@ module.exports = {
   },
 
   getMe: async (req, res) => {
-    console.log('🔥🔥🔥««««« helooooooooooooo »»»»»🚀🚀🚀');
     try {
       res.status(200).json({
         message: 'Lấy thông tin người dùng thành công',
         payload: req.user,
       });
     } catch (err) {
-      console.log('🔥🔥🔥««««« err »»»»»🚀🚀🚀', err);
       res.sendStatus(500);
     }
   },
