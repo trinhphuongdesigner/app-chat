@@ -4,7 +4,7 @@ const { User } = require('../../../../models');
 const { generateUserToken, generateUserRefreshToken } = require('../../../../services/jwt');
 
 module.exports = {
-  register: async (req, res) => {
+  register: async (req, res, next) => {
     try {
       const {
         email,
@@ -38,12 +38,12 @@ module.exports = {
         payload,
         message: 'Đăng kí thành công',
       });
-    } catch (err) {
-      return res.status(500).json({ code: 500, error: err });
+    } catch (error) {
+      next(error);
     }
   },
 
-  login: async (req, res) => {
+  login: async (req, res, next) => {
     try {
       const {
         _id,
@@ -68,17 +68,17 @@ module.exports = {
         token,
         refreshToken,
       });
-    } catch (err) {
-      return res.status(500).json({ code: 500, error: err });
+    } catch (error) {
+      next(error);
     }
   },
 
-  checkRefreshToken: async (req, res) => {
+  checkRefreshToken: async (req, res, next) => {
     try {
       const { refreshToken } = req.body;
 
-      JWT.verify(refreshToken, jwtSettings.JWT_SECRET, async (err, payload) => {
-        if (err) {
+      JWT.verify(refreshToken, jwtSettings.JWT_SECRET, async (error, payload) => {
+        if (error) {
           return res.status(401).json({
             message: 'refreshToken is invalid',
           });
@@ -120,22 +120,8 @@ module.exports = {
           message: 'refreshToken is invalid',
         });
       });
-    } catch (err) {
-      res.status(400).json({
-        statusCode: 400,
-        message: err,
-      });
-    }
-  },
-
-  getMe: async (req, res) => {
-    try {
-      res.status(200).json({
-        message: 'Lấy thông tin người dùng thành công',
-        payload: req.user,
-      });
-    } catch (err) {
-      res.sendStatus(500);
+    } catch (error) {
+      next(error);
     }
   },
 };

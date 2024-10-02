@@ -120,6 +120,12 @@ module.exports = {
     return new RegExp(regex, 'gi');
   },
 
+  groupSearch: (text) => {
+    const regex = new RegExp(['^', text, '$'].join(''), 'i');
+
+    return new RegExp(regex);
+  },
+
   checkPermission,
 
   apiErrors,

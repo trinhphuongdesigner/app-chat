@@ -66,6 +66,9 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
+    resetPasswordToken: {
+      type: String,
+    },
   },
   {
     versionKey: false,

@@ -3,23 +3,23 @@ const express = require('express');
 const router = express.Router();
 
 const {
-  updateUserInfo,
-  getUserInfo,
+  updateMyInfo,
+  getMyInfo,
   changePassword,
   updateAvatar,
 } = require('./controllers');
 
 const {
-  checkUpdateInfo,
-  checkChangePassword,
+  updateUserSchema,
+  updatePasswordSchema,
 } = require('./validations');
 
 router.route('/me')
-  .get(getUserInfo)
-  .put(checkUpdateInfo, updateUserInfo);
+  .get(getMyInfo)
+  .put(updateUserSchema, updateMyInfo);
 
 router.route('/me/password')
-  .put(checkChangePassword, changePassword);
+  .put(updatePasswordSchema, changePassword);
 
 router.route('/me/avatar')
   .put(updateAvatar);

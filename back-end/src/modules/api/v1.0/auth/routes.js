@@ -10,7 +10,6 @@ const {
   register,
   login,
   checkRefreshToken,
-  getMe,
 } = require('./controllers');
 const { validateSchema } = require('../../../../helpers');
 
@@ -29,12 +28,5 @@ router.route('/login')
 
 router.route('/refresh-token')
   .post(checkRefreshToken);
-
-router.route('/profile')
-  .get(
-    passport.authenticate('jwt', { session: false }),
-    getMe,
-  );
-
 
 module.exports = router;

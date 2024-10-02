@@ -1,13 +1,16 @@
-const { User } = require('../../../../models');
+/* eslint-disable no-unused-vars */
+const { Group, UserGroup, User } = require('../../../../models');
 const {
   apiErrors, apiResponse,
   fuzzySearch,
+  groupSearch,
+  asyncForEach,
 } = require('../../../../helpers');
 
 const s3Service = require('../../../../services/s3');
 
 module.exports = {
-  getUsers: async (req, res, next) => {
+  getGroups: async (req, res, next) => {
     try {
       const { q, page, limit } = req.query;
       const currentPage = Math.ceil((!page || page <= 0) ? 1 : +page);
@@ -19,30 +22,85 @@ module.exports = {
 
       if (q) {
         const search = fuzzySearch(q);
-
-        conditionFind.$or = [
-          { firstName: search },
-          { lastName: search },
-        ];
+        conditionFind.name = search;
       }
 
-      const users = await User
-        .find(conditionFind)
-        .select('firstName lastName avatar birthday')
-        .sort({ firstName: 1, lastName: 1 })
-        .skip(limit * (currentPage - 1))
-        .limit(limit)
-        .lean();
+      const groups = await Group.aggregate()
+        .lookup({
+          from: 'user_groups',
+          localField: '_id',
+          foreignField: 'groupId',
+          as: 'userGroups',
+        });
+        // .unwind('customer');
+        // .find(conditionFind)
+        // .select('firstName lastName avatar birthday')
+        // .sort({ firstName: 1, lastName: 1 })
+        // .skip(limit * (currentPage - 1))
+        // .limit(limit)
+        // .lean();
 
-      res.json(apiResponse({ payload: users }));
+      res.json(apiResponse({ payload: groups }));
     } catch (error) {
       next(error);
     }
   },
 
-  getMyInfo: async (req, res, next) => {
+  createGroup: async (req, res, next) => {
     try {
-      return res.json(apiResponse({ payload: req.user }));
+      const { name, users } = req.body;
+
+      const checkGroup = await name.findOne({ name: groupSearch(name) });
+
+      if (checkGroup) return next(apiErrors.groupNameAlreadyExists);
+
+      const userErrors = [];
+      asyncForEach(users, async (user) => {
+        const checkUser = await User.findOne({
+          _id: user,
+          isActive: true,
+        });
+
+        if (!checkUser) {
+          userErrors.push(`${user} is not exits`);
+        }
+      });
+
+      if (userErrors.length > 0) {
+        return res.json(apiResponse({
+          status: 404,
+          code: 404,
+          message: userErrors,
+        }));
+      }
+
+      // const checkMember = await UserGroup.aggregate({ name: groupSearch(name) });
+      // const groups = await Group.aggregate()
+      //   .lookup({
+      //     from: 'user_groups',
+      //     localField: '_id',
+      //     foreignField: 'groupId',
+      //     as: 'userGroups',
+      //   });
+
+      // Method 1
+      // const group = new Group({ name });
+      // await group.save();
+
+      // Method 2
+      const group = await Group.create({ name });
+
+      const userGroups = [];
+      asyncForEach(users, async (user) => {
+        const userGroup = await UserGroup.create({
+          userId: user,
+          groupId: group._id,
+        });
+
+        userGroups.push(userGroup);
+      });
+
+      return res.json(apiResponse({ payload: xxx }));
     } catch (error) {
       next(error);
     }
