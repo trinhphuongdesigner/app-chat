@@ -4,7 +4,7 @@ const { apiResponse } = require('../../../../helpers');
 module.exports = {
   validationUserGroup: async (req, res, next) => {
     try {
-      const { id: groupId } = req.params;
+      const { groupId } = req.params;
       const { id: userId } = req.user;
 
       const checkGroup = await Group.findOne({ _id: groupId, isActive: true });

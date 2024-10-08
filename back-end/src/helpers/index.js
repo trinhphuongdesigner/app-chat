@@ -19,7 +19,7 @@ module.exports = {
     }
   },
 
-  toObjectId: id => ObjectId(id),
+  toObjectId: id => new ObjectId(id),
 
   formatDate: (dateTimeStr) => {
     const dateTime = new Date(dateTimeStr);
