@@ -12,11 +12,10 @@ const s3Service = require('../../../../services/s3');
 module.exports = {
   getGroups: async (req, res, next) => {
     try {
-      const { q, page, limit } = req.query;
+      const { q, page, limit = 10 } = req.query;
       const currentPage = Math.ceil((!page || page <= 0) ? 1 : +page);
 
       const conditionFind = {
-        _id: { $nin: [req.user.id] },
         isActive: true,
       };
 
@@ -31,16 +30,29 @@ module.exports = {
           localField: '_id',
           foreignField: 'groupId',
           as: 'userGroups',
+        })
+        .match(conditionFind)
+        .sort({ updatedAt: -1, name: 1 })
+        .skip(limit * (currentPage - 1))
+        .limit(limit)
+        .project({
+          isActive: 0,
+          createdAt: 0,
+          userGroups: {
+            groupId: 0,
+            isActive: 0,
+            createdAt: 0,
+          },
         });
-        // .unwind('customer');
-        // .find(conditionFind)
-        // .select('firstName lastName avatar birthday')
-        // .sort({ firstName: 1, lastName: 1 })
-        // .skip(limit * (currentPage - 1))
-        // .limit(limit)
-        // .lean();
 
-      res.json(apiResponse({ payload: groups }));
+      const total = await Group.countDocuments(conditionFind);
+
+      res.json(apiResponse({
+        payload: {
+          groups,
+          total,
+        },
+      }));
     } catch (error) {
       next(error);
     }
@@ -55,7 +67,7 @@ module.exports = {
       if (checkGroup) return next(apiErrors.groupNameAlreadyExists);
 
       const userErrors = [];
-      asyncForEach(users, async (user) => {
+      await asyncForEach(users, async (user) => {
         const checkUser = await User.findOne({
           _id: user,
           isActive: true,
@@ -113,66 +125,153 @@ module.exports = {
     }
   },
 
-  updateMyInfo: async (req, res, next) => {
+  updateGroupName: async (req, res, next) => {
     try {
-      const {
-        firstName, middleName, lastName, phoneNumber,
-      } = req.body;
+      const { id: groupId } = req.params;
       const { id: userId } = req.user;
+      const { name } = req.body;
 
-      const user = await User
-        .findByIdAndUpdate(userId, {
-          firstName, middleName, lastName, phoneNumber,
-        }, { new: true })
-        .select('-password -refreshToken -resetPasswordToken')
+      const checkGroup = await Group.findOne({ _id: groupId, isActive: true });
+      if (!checkGroup) {
+        res.json(apiResponse({ message: 'Nhóm không tồn tại' }));
+      }
+
+      const checkUserGroup = await UserGroup
+        .findOne({
+          userId,
+          groupId,
+        })
         .lean();
 
-      res.json(apiResponse({ payload: user }));
+      if (!checkUserGroup) {
+        res.json(apiResponse({ message: 'Người dùng không thuộc nhóm này' }));
+      }
+
+      const checkGroupName = await Group
+        .findOne({
+          name: groupSearch(name),
+          _id: { $ne: groupId },
+        })
+        .lean();
+
+      if (!checkGroupName) {
+        res.json(apiResponse({ message: 'Tên nhóm đã tồn tại' }));
+      }
+
+      const group = Group.findByIdAndUpdate(groupId, { name }, { new: true });
+
+      res.json(apiResponse({ payload: group }));
     } catch (error) {
       next(error);
     }
   },
 
-  changePassword: async (req, res, next) => {
+  updateMember: async (req, res, next) => {
     try {
-      const { password, newPassword } = req.body;
-      const user = await User.findById(req.user.id).select('email firstName middleName lastName password');
+      const { id: groupId } = req.params;
+      const { id: userId } = req.user;
+      const { users } = req.body;
 
-      if (!user.comparePassword(password)) {
-        return next(apiErrors.getBadRequestError('Mật khẩu không chính xác', apiErrors.INVALID_PASSWORD));
+      const checkGroup = await Group.findOne({ _id: groupId, isActive: true });
+      if (!checkGroup) {
+        res.json(apiResponse({ message: 'Nhóm không tồn tại' }));
       }
-      user.password = newPassword;
-      await user.save();
+
+      const checkUserGroup = await UserGroup
+        .findOne({
+          userId,
+          groupId,
+        })
+        .lean();
+
+      if (!checkUserGroup) {
+        res.json(apiResponse({ message: 'Người dùng không thuộc nhóm này' }));
+      }
+
+      const newUsers = [];
+      const userErrors = [];
+
+      await asyncForEach(users, async (user) => {
+        const checkUserInGroup = await UserGroup
+          .findOne({
+            userId: user,
+            groupId,
+          })
+          .lean();
+
+        if (!checkUserInGroup) {
+          const checkUser = await User.findOne({
+            _id: user,
+            isActive: true,
+          });
+
+          if (!checkUser) {
+            userErrors.push(`${user} is not exits`);
+          } else {
+            newUsers.push(user);
+          }
+        }
+      });
+
+      if (userErrors.length > 0) {
+        return res.json(apiResponse({
+          status: 404,
+          code: 404,
+          message: userErrors,
+        }));
+      }
+
+      const userGroups = [];
+      await asyncForEach(newUsers, async (user) => {
+        const userGroup = await UserGroup.create({
+          userId: user,
+          groupId,
+        });
+
+        userGroups.push(userGroup);
+      });
 
       res.json(apiResponse({
-        message: 'Đổi mật khẩu thành công',
+        payload: {
+          _id: checkGroup._id,
+          name: checkGroup.name,
+          users: userGroups,
+        },
       }));
     } catch (error) {
       next(error);
     }
   },
 
-  updateAvatar: async (req, res, next) => {
-    s3Service.upload.single('file')(req, res, async (err) => {
-      if (err) {
-        if (err.code === 'LIMIT_FILE_SIZE') {
-          return next(apiErrors.fileTooLarge);
-        }
-        return next(err);
-      }
-      try {
-        const currentUser = req.user;
-        const avatar = req.file.transforms[0].location;
-        await User.update({ _id: currentUser.id }, { avatar });
+  deleteGroup: async (req, res, next) => {
+    try {
+      const { id: groupId } = req.params;
+      const { id: userId } = req.user;
 
-        currentUser.avatar = avatar;
-
-        res.json(apiResponse({
-          payload: avatar,
-        }));
-      } catch (error) {
-        next(error);
+      const checkGroup = await Group.findOne({ _id: groupId, isActive: true });
+      if (!checkGroup) {
+        res.json(apiResponse({ message: 'Nhóm không tồn tại' }));
       }
-    });
+
+      const checkUserGroup = await UserGroup
+        .findOne({
+          userId,
+          groupId,
+        })
+        .lean();
+
+      if (!checkUserGroup) {
+        res.json(apiResponse({ message: 'Người dùng không thuộc nhóm này' }));
+      }
+
+      await Group.deleteOne({ _id: groupId });
+      await UserGroup.deleteMany({ groupId });
+
+      res.json(apiResponse({
+        message: 'Xóa thành công nhóm',
+      }));
+    } catch (error) {
+      next(error);
+    }
   },
 };

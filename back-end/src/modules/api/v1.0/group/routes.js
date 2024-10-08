@@ -5,12 +5,16 @@ const router = express.Router();
 const {
   getGroups,
   createGroup,
-  // updateGroup,
-  // deleteGroup,
+  updateGroupName,
+  updateMember,
+  deleteGroup,
 } = require('./controllers');
 
 const {
   checkCreateGroupSchema,
+  checkUpdateGroupNameSchema,
+  checkUpdateGroupUsersSchema,
+  checkDeleteGroupSchema,
 } = require('./validations');
 const { validateSchema } = require('../../../../helpers');
 
@@ -18,8 +22,10 @@ router.route('/').get(getGroups);
 
 router.route('/create').post(validateSchema(checkCreateGroupSchema), createGroup);
 
-// router.route('/:id')
-//   .put(updateGroup)
-//   .delete(deleteGroup);
+router.route('/update/name/:id').post(validateSchema(checkUpdateGroupNameSchema), updateGroupName);
+
+router.route('/update/users/:id').post(validateSchema(checkUpdateGroupUsersSchema), updateMember);
+
+router.route('/:id').delete(validateSchema(checkDeleteGroupSchema), deleteGroup);
 
 module.exports = router;
