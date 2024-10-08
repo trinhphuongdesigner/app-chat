@@ -61,6 +61,7 @@ module.exports = {
             birthday: 0,
             createdAt: 0,
             updatedAt: 0,
+            refreshToken: 0,
           },
           // group: {
           //   createdAt: 0,

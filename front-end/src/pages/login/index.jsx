@@ -43,7 +43,7 @@ function Login() {
 
       showSuccess('Đăng nhập thành công');
 
-      navigate(LOCATION.HOME);
+      setTimeout(() => navigate(0), 2000);
     } catch (error) {
       handleErrorResponse(error, 'Đăng nhập không thành công');
     }

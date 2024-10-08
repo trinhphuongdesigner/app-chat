@@ -14,19 +14,14 @@ const routes = [{ path: LOCATION.HOME, element: <ChatUI /> }];
 function AppRouter() {
   const token = window.localStorage.getItem(TOKEN);
 
-  // useEffect(() => {
-  //   if (!token) {
-  //     navigate(LOCATION.LOGIN || LOCATION.REGISTER);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [token]);
-
   return (
     <div className="container">
       {!token ? (
         <Routes>
           <Route path={LOCATION.LOGIN} element={<Login />} />
           <Route path={LOCATION.REGISTER} element={<Register />} />
+
+          <Route path="*" element={<Navigate to={LOCATION.LOGIN} replace />} />
         </Routes>
       ) : (
         <Routes>
@@ -52,7 +47,7 @@ function AppRouter() {
               </>
             );
           })}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to={LOCATION.HOME} replace />} />
         </Routes>
       )}
     </div>

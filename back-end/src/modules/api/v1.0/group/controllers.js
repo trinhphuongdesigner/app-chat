@@ -39,6 +39,7 @@ module.exports = {
             groupId: 0,
             isActive: 0,
             createdAt: 0,
+            refreshToken: 0,
           },
         });
 
