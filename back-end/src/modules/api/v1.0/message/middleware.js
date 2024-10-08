@@ -2,7 +2,7 @@ const { Group, UserGroup } = require('../../../../models');
 const { apiResponse } = require('../../../../helpers');
 
 module.exports = {
-  checkUpdate: async (req, res, next) => {
+  validationUserGroup: async (req, res, next) => {
     try {
       const { id: groupId } = req.params;
       const { id: userId } = req.user;

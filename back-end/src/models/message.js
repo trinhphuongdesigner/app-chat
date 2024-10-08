@@ -8,7 +8,7 @@ const messageSchema = new Schema(
     message: {
       type: String,
       required: [true, 'Tin nhắn bắt buộc điền'],
-      maxLength: [250, 'Tin nhắn không vượt quá 250 ký tự'],
+      maxLength: [255, 'Tin nhắn không vượt quá 255 ký tự'],
       trim: true,
     },
     senderId: {

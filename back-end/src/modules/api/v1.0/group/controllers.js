@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const { Group, UserGroup, User } = require('../../../../models');
 const {
   apiErrors, apiResponse,
@@ -6,8 +5,6 @@ const {
   groupSearch,
   asyncForEach,
 } = require('../../../../helpers');
-
-const s3Service = require('../../../../services/s3');
 
 module.exports = {
   getGroups: async (req, res, next) => {
@@ -124,7 +121,6 @@ module.exports = {
   updateGroupName: async (req, res, next) => {
     try {
       const { id: groupId } = req.params;
-      const { id: userId } = req.user;
       const { name } = req.body;
 
       const checkGroupName = await Group
