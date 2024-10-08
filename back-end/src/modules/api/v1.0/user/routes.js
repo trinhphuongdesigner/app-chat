@@ -13,13 +13,14 @@ const {
   updateUserSchema,
   updatePasswordSchema,
 } = require('./validations');
+const { validateSchema } = require('../../../../helpers');
 
 router.route('/me')
   .get(getMyInfo)
-  .put(updateUserSchema, updateMyInfo);
+  .put(validateSchema(updateUserSchema), updateMyInfo);
 
 router.route('/me/password')
-  .put(updatePasswordSchema, changePassword);
+  .put(validateSchema(updatePasswordSchema), changePassword);
 
 router.route('/me/avatar')
   .put(updateAvatar);

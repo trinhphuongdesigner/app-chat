@@ -5,21 +5,21 @@ const router = express.Router();
 const {
   getGroups,
   createGroup,
-  updateGroup,
-  deleteGroup,
+  // updateGroup,
+  // deleteGroup,
 } = require('./controllers');
 
 const {
-  updateUserSchema,
-  updatePasswordSchema,
+  checkCreateGroupSchema,
 } = require('./validations');
+const { validateSchema } = require('../../../../helpers');
 
 router.route('/').get(getGroups);
 
-router.route('/create').post(createGroup);
+router.route('/create').post(validateSchema(checkCreateGroupSchema), createGroup);
 
-router.route('/:id')
-  .put(updateGroup)
-  .delete(deleteGroup);
+// router.route('/:id')
+//   .put(updateGroup)
+//   .delete(deleteGroup);
 
 module.exports = router;

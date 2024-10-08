@@ -50,7 +50,7 @@ module.exports = {
     try {
       const { name, users } = req.body;
 
-      const checkGroup = await name.findOne({ name: groupSearch(name) });
+      const checkGroup = await Group.findOne({ name: groupSearch(name) });
 
       if (checkGroup) return next(apiErrors.groupNameAlreadyExists);
 
@@ -91,7 +91,7 @@ module.exports = {
       const group = await Group.create({ name });
 
       const userGroups = [];
-      asyncForEach(users, async (user) => {
+      await asyncForEach(users, async (user) => {
         const userGroup = await UserGroup.create({
           userId: user,
           groupId: group._id,
@@ -100,8 +100,15 @@ module.exports = {
         userGroups.push(userGroup);
       });
 
-      return res.json(apiResponse({ payload: xxx }));
+      return res.json(apiResponse({
+        payload: {
+          _id: group._id,
+          name: group.name,
+          users: userGroups,
+        },
+      }));
     } catch (error) {
+      console.log('🔥🔥🔥««««« error »»»»»🚀🚀🚀', error);
       next(error);
     }
   },

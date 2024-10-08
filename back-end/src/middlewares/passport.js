@@ -12,13 +12,11 @@ const passportVerifyToken = new JwtStrategy(
     secretOrKey: jwtSettings.JWT_SECRET,
   },
   async (payload, done) => {
-    console.log('🔥🔥🔥««««« payload »»»»»🚀🚀🚀', payload);
     try {
       const user = await User.findOne({
         _id: payload._id,
         isActive: true,
       }).select('-password');
-      console.log('🔥🔥🔥««««« user »»»»»🚀🚀🚀', user);
 
       if (!user) return done(null, false);
 
