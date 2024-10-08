@@ -31,13 +31,13 @@ module.exports = {
           as: 'sender',
         })
         .unwind('sender')
-        .lookup({
-          from: 'groups',
-          localField: 'groupId',
-          foreignField: '_id',
-          as: 'group',
-        })
-        .unwind('group')
+        // .lookup({
+        //   from: 'groups',
+        //   localField: 'groupId',
+        //   foreignField: '_id',
+        //   as: 'group',
+        // })
+        // .unwind('group')
         .lookup({
           from: 'messages',
           localField: 'parentMessageId',
@@ -54,7 +54,7 @@ module.exports = {
         .project({
           senderId: 0,
           groupId: 0,
-          // parentMessageId: 0,
+          parentMessageId: 0,
           updatedAt: 0,
           sender: {
             password: 0,
@@ -62,10 +62,10 @@ module.exports = {
             createdAt: 0,
             updatedAt: 0,
           },
-          group: {
-            createdAt: 0,
-            updatedAt: 0,
-          },
+          // group: {
+          //   createdAt: 0,
+          //   updatedAt: 0,
+          // },
           parentMessage: {
             senderId: 0,
             groupId: 0,
