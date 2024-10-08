@@ -63,7 +63,6 @@ module.exports = {
       const { name, users } = req.body;
 
       const checkGroup = await Group.findOne({ name: groupSearch(name) });
-
       if (checkGroup) return next(apiErrors.groupNameAlreadyExists);
 
       const userErrors = [];
@@ -77,7 +76,6 @@ module.exports = {
           userErrors.push(`${user} is not exits`);
         }
       });
-
       if (userErrors.length > 0) {
         return res.json(apiResponse({
           status: 404,
@@ -108,7 +106,6 @@ module.exports = {
           userId: user,
           groupId: group._id,
         });
-
         userGroups.push(userGroup);
       });
 
@@ -120,7 +117,6 @@ module.exports = {
         },
       }));
     } catch (error) {
-      console.log('🔥🔥🔥««««« error »»»»»🚀🚀🚀', error);
       next(error);
     }
   },
@@ -131,34 +127,17 @@ module.exports = {
       const { id: userId } = req.user;
       const { name } = req.body;
 
-      const checkGroup = await Group.findOne({ _id: groupId, isActive: true });
-      if (!checkGroup) {
-        res.json(apiResponse({ message: 'Nhóm không tồn tại' }));
-      }
-
-      const checkUserGroup = await UserGroup
-        .findOne({
-          userId,
-          groupId,
-        })
-        .lean();
-
-      if (!checkUserGroup) {
-        res.json(apiResponse({ message: 'Người dùng không thuộc nhóm này' }));
-      }
-
       const checkGroupName = await Group
         .findOne({
           name: groupSearch(name),
           _id: { $ne: groupId },
         })
         .lean();
-
-      if (!checkGroupName) {
+      if (checkGroupName) {
         res.json(apiResponse({ message: 'Tên nhóm đã tồn tại' }));
       }
 
-      const group = Group.findByIdAndUpdate(groupId, { name }, { new: true });
+      const group = await Group.findByIdAndUpdate(groupId, { name }, { new: true });
 
       res.json(apiResponse({ payload: group }));
     } catch (error) {
@@ -169,28 +148,10 @@ module.exports = {
   updateMember: async (req, res, next) => {
     try {
       const { id: groupId } = req.params;
-      const { id: userId } = req.user;
       const { users } = req.body;
-
-      const checkGroup = await Group.findOne({ _id: groupId, isActive: true });
-      if (!checkGroup) {
-        res.json(apiResponse({ message: 'Nhóm không tồn tại' }));
-      }
-
-      const checkUserGroup = await UserGroup
-        .findOne({
-          userId,
-          groupId,
-        })
-        .lean();
-
-      if (!checkUserGroup) {
-        res.json(apiResponse({ message: 'Người dùng không thuộc nhóm này' }));
-      }
 
       const newUsers = [];
       const userErrors = [];
-
       await asyncForEach(users, async (user) => {
         const checkUserInGroup = await UserGroup
           .findOne({
@@ -212,7 +173,6 @@ module.exports = {
           }
         }
       });
-
       if (userErrors.length > 0) {
         return res.json(apiResponse({
           status: 404,
@@ -227,15 +187,13 @@ module.exports = {
           userId: user,
           groupId,
         });
-
         userGroups.push(userGroup);
       });
 
       res.json(apiResponse({
         payload: {
-          _id: checkGroup._id,
-          name: checkGroup.name,
-          users: userGroups,
+          _id: groupId,
+          newUsers: userGroups,
         },
       }));
     } catch (error) {
@@ -246,23 +204,6 @@ module.exports = {
   deleteGroup: async (req, res, next) => {
     try {
       const { id: groupId } = req.params;
-      const { id: userId } = req.user;
-
-      const checkGroup = await Group.findOne({ _id: groupId, isActive: true });
-      if (!checkGroup) {
-        res.json(apiResponse({ message: 'Nhóm không tồn tại' }));
-      }
-
-      const checkUserGroup = await UserGroup
-        .findOne({
-          userId,
-          groupId,
-        })
-        .lean();
-
-      if (!checkUserGroup) {
-        res.json(apiResponse({ message: 'Người dùng không thuộc nhóm này' }));
-      }
 
       await Group.deleteOne({ _id: groupId });
       await UserGroup.deleteMany({ groupId });
