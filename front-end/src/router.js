@@ -1,7 +1,10 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import ChatUI from 'chat/chatUI';
+import AuthLayout from 'components/Layout/AuthLayout';
+import NonAuthLayout from 'components/Layout/NonAuthLayout';
 import Login from 'pages/login';
+import NotFound from 'pages/notFound';
 import Register from 'pages/register';
 import { LOCATION, TOKEN } from 'utils/constants';
 // import NotFound from 'Pages/notFound/index.jsx';
@@ -31,11 +34,11 @@ function AppRouter() {
                 <Route
                   key={crypto.randomUUID()}
                   path={r.path}
-                  element={r.element}
-                  // element={<AuthLayout>{r.element}</AuthLayout>}
+                  // element={r.element}
+                  element={<AuthLayout>{r.element}</AuthLayout>}
                 />
 
-                {/* <Route
+                <Route
                   key="not-found"
                   path={LOCATION.NOT_FOUND}
                   element={
@@ -43,7 +46,7 @@ function AppRouter() {
                       <NotFound />
                     </NonAuthLayout>
                   }
-                /> */}
+                />
               </>
             );
           })}
